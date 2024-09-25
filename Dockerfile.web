@@ -1,0 +1,23 @@
+FROM php:8.3-fpm-bookworm
+
+# Install dependencies
+RUN apt-get update && apt-get install -y \
+    libpq-dev \
+    libzip-dev \
+    libonig-dev \
+    libcurl4-gnutls-dev \
+    libicu-dev \
+    curl \
+    zip \
+    unzip \
+    nginx \
+    supervisor
+
+# Install PHP extensions
+RUN docker-php-ext-install curl intl pdo_pgsql pgsql zip bcmath mbstring opcache
+
+# Install Redis
+RUN pecl install redis && docker-php-ext-enable redis
+
+# Clean up
+RUN apt-get clean && rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
